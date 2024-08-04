@@ -49,3 +49,11 @@ comando: go build
 -- Comando de instalação
 comando: go install
 (irá gerar o arqivo main para a raiz do projeto e não para seua pacotes)
+
+-- Comando instalacao pacote
+comando: go get <nome do pacote>
+exemplo:  go get github.com/badoux/checkmail
+(pacote de validação de email - essa dependencia é inclusa no arquivo "go.mod")
+
+-- Remove todas as dependencias não utilizadas no projeto (remove do arquivo "go.mod"
+comando: go mod tidy
