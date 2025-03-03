@@ -45,7 +45,6 @@ func main() {
 		"nome": "Touro",
 	}
 
-	// Verificando valores do campo noco adicionado.
 	fmt.Println("usuário 2 adicionado: ", usuario2)
 	fmt.Println("usuário verificando o campo signo: ", usuario2["signo"])
 
