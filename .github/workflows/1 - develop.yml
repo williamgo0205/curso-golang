@@ -3,25 +3,23 @@ name: "1 - develop"
 on:
   push:
     branches: [ "develop" ]
-  pull_request:
-    branches: [ "develop" ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Set up Go
-      uses: actions/setup-go@v4
-      with:
-        go-version: '1.22.5'
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.22'
 
-    - name: Build
-      run: go build -v ./...
+      - name: Build
+        run: go build -v ./...
 
-    # - name: Test
-    #   run: go test -v ./...
+      # - name: Test
+      #   run: go test -v ./...
 
   create-pull-request:
     needs: build
@@ -31,6 +29,17 @@ jobs:
       pull-requests: write
     steps:
       - uses: actions/checkout@v4
+
+      - name: Configure Git
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+
+      - name: Debug Git Info
+        run: |
+          git fetch origin
+          git branch -a
+          git status
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v6
