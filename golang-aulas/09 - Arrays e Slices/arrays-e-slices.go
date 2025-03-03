@@ -7,8 +7,9 @@ import (
 
 // 09- Aula sobre Arrays e Slices em go
 func main() {
+	fmt.Println("---------------")
 	fmt.Println("Arrays e Slices")
-
+	fmt.Println("---------------")
 	// ARRAY - Array é uma lista de valores
 
 	// Exemplo 1
@@ -53,4 +54,47 @@ func main() {
 	fmt.Println(reflect.TypeOf(slice))
 	fmt.Println(reflect.TypeOf(array3))
 
+	fmt.Println("---------------")
+	fmt.Println("Arrays Internos")
+	fmt.Println("---------------")
+
+	// Arrays Internos
+
+	// make é uma função que ocupa um espaço na memória para uma determinada necessidade
+	// Essa função recebe 3 parâmetros:
+	//    1 - Tipo do objeto (int, string...)
+	//    2 - Tamanho do objeto
+	//    3 - capacidade (quantidade máxima dos itens)
+	slice3 := make([]float32, 10, 11)
+	fmt.Println("slice3: ", slice3)
+	fmt.Println("slice3 tamanho (len): ", len(slice3))
+	fmt.Println("slice3 capacidade (cap): ", cap(slice3))
+
+	// Adicionando um valor no slice
+	slice3 = append(slice3, 7)
+	fmt.Println("slice3: ", slice3)
+	fmt.Println("slice3 tamanho (len): ", len(slice3))
+	fmt.Println("slice3 capacidade (cap): ", cap(slice3))
+
+	// Adicionando mais um valor no slice
+	slice3 = append(slice3, 9)
+	fmt.Println("slice3: ", slice3)
+	fmt.Println("slice3 tamanho (len): ", len(slice3))
+	fmt.Println("slice3 capacidade (cap): ", cap(slice3))
+
+	// Adicionando um slace através da opção make sem o valor de capacidade qe é opcional
+	slice4 := make([]float32, 5)
+	fmt.Println("slice4: ", slice4)
+	fmt.Println("slice4 tamanho (len): ", len(slice4))
+	fmt.Println("slice4 capacidade (cap): ", cap(slice4))
+
+	// Adicionando um valor no slice
+	slice4 = append(slice4, 10)
+	fmt.Println("slice4: ", slice4)
+	fmt.Println("slice4 tamanho (len): ", len(slice4))
+	fmt.Println("slice4 capacidade (cap): ", cap(slice4))
+
+	// Resumidamente:
+	// Array - é uma lista com o tamanho fixo
+	// Slice - é uma lista sem tamanho fixo
 }
