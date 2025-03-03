@@ -24,6 +24,11 @@ jobs:
       - name: Compilar o projeto
         run: go build -v ./...
 
+      - name: Configurar usuário Git
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+
       - name: Criar commit vazio para forçar PR (se necessário)
         run: |
           git checkout develop
@@ -64,4 +69,3 @@ jobs:
           author: "GitHub Actions <actions@github.com>"
           delete-branch: false
           commit-message: "[create-pull-request] automated change"
-          always-create-pr: true
