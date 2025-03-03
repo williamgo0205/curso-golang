@@ -8,16 +8,17 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout do código
+        uses: actions/checkout@v4
 
-      - name: Set up Go
+      - name: Configurar Go
         uses: actions/setup-go@v4
         with:
-          go-version: '1.22.5'
+          go-version: '1.22'
 
-      - name: Build
+      - name: Compilar o projeto
         run: go build -v ./...
-
+  
       # - name: Test
       #   run: go test -v ./...
 
@@ -28,26 +29,21 @@ jobs:
       contents: write
       pull-requests: write
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout do código
+        uses: actions/checkout@v4
 
-      - name: Configure Git
+      - name: Configurar Git
         run: |
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
 
-      - name: Debug Git Info
-        run: |
-          git fetch origin
-          git branch -a
-          git status
-
-      - name: Create Pull Request
+      - name: Criar Pull Request
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           base: main
           branch: develop
-          title: "🚀 Merge develop into main"
-          body: "Este PR foi criado automaticamente para sincronizar develop com main."
+          title: "🚀 Atualização automática: develop → main"
+          body: "Este PR foi criado automaticamente para sincronizar a branch `develop` com `main`."
           labels: "auto-pr"
           draft: false
