@@ -10,6 +10,8 @@ jobs:
     steps:
       - name: Checkout do código
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Garante acesso ao histórico de commits
 
       - name: Configurar Go
         uses: actions/setup-go@v4
@@ -21,6 +23,35 @@ jobs:
 
       - name: Compilar o projeto
         run: go build -v ./...
-  
-      # - name: Test
-      #   run: go test -v ./...
+
+  create-pull-request:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Garante que todo histórico do Git esteja disponível
+
+      - name: Obter nome e e-mail do autor do commit
+        run: |
+          echo "COMMIT_AUTHOR=$(git log -1 --pretty=format:'%an')" >> $GITHUB_ENV
+          echo "COMMIT_EMAIL=$(git log -1 --pretty=format:'%ae')" >> $GITHUB_ENV
+
+      - name: Sincronizar com o repositório remoto
+        run: |
+          git fetch origin
+          git reset --hard origin/develop  # Faz um reset na branch local para corresponder à remota
+
+      - name: Criar Pull Request para a main
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.PAT_GITHUB }}  # Agora usando o token personalizado
+          branch: develop
+          base: main
+          title: "Merge develop → main"
+          body: "Pull request automático para mesclar as alterações da branch develop na main."
+          labels: "automerge, develop"
+          draft: false
+          author: "${{ env.COMMIT_AUTHOR }} <${{ env.COMMIT_EMAIL }}>"
+          delete-branch: false  # Evita deletar a branch develop automaticamente
