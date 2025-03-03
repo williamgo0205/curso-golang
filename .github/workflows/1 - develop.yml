@@ -11,7 +11,7 @@ jobs:
       - name: Checkout do código
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Garante acesso ao histórico de commits
+          fetch-depth: 0  # Pega todo o histórico de commits
 
       - name: Configurar Go
         uses: actions/setup-go@v4
@@ -31,27 +31,39 @@ jobs:
       - name: Checkout do código
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Garante que todo histórico do Git esteja disponível
+          fetch-depth: 0
 
-      - name: Obter nome e e-mail do autor do commit
+      - name: Configurar usuário Git
         run: |
-          echo "COMMIT_AUTHOR=$(git log -1 --pretty=format:'%an')" >> $GITHUB_ENV
-          echo "COMMIT_EMAIL=$(git log -1 --pretty=format:'%ae')" >> $GITHUB_ENV
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
 
-      - name: Sincronizar com o repositório remoto
+      - name: Atualizar branch `develop` com o remoto
         run: |
           git fetch origin
-          git reset --hard origin/develop  # Faz um reset na branch local para corresponder à remota
+          git checkout develop
+          git pull origin develop --rebase  # Garante que temos a versão mais atualizada
 
-      - name: Criar Pull Request para a main
+      - name: Criar um commit se houver mudanças
+        run: |
+          if git diff --quiet; then
+            echo "Nenhuma mudança detectada, continuando..."
+          else
+            git add .
+            git commit -m "[GitHub Actions] Atualizando develop antes do PR"
+            git push origin develop
+          fi
+
+      - name: Criar Pull Request para `main`
         uses: peter-evans/create-pull-request@v5
         with:
-          token: ${{ secrets.PAT_GITHUB }}  # Agora usando o token personalizado
+          token: ${{ secrets.PAT_GITHUB }}  # Token pessoal
           branch: develop
           base: main
           title: "Merge develop → main"
           body: "Pull request automático para mesclar as alterações da branch develop na main."
           labels: "automerge, develop"
           draft: false
-          author: "${{ env.COMMIT_AUTHOR }} <${{ env.COMMIT_EMAIL }}>"
-          delete-branch: false  # Evita deletar a branch develop automaticamente
+          author: "GitHub Actions <actions@github.com>"
+          delete-branch: false
+          commit-message: "[create-pull-request] automated change"
