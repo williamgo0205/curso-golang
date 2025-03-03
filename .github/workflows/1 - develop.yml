@@ -12,6 +12,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          token: ${{ secrets.PAT_GITHUB }} # 🔥 Usa o PAT para permissões corretas
 
       - name: Configurar Go
         uses: actions/setup-go@v4
@@ -34,7 +35,9 @@ jobs:
           git checkout develop
           git pull origin develop
           git commit --allow-empty -m "[GitHub Actions] Forçando atualização para PR"
-          git push origin develop
+          git push https://github.com/${{ github.repository }}.git develop
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT_GITHUB }} # 🔥 Usa o PAT para evitar erro 403
 
   create-pull-request:
     needs: build
@@ -44,6 +47,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          token: ${{ secrets.PAT_GITHUB }} # 🔥 Usa o PAT para permissões corretas
 
       - name: Configurar usuário Git
         run: |
@@ -59,7 +63,7 @@ jobs:
       - name: Criar Pull Request para `main`
         uses: peter-evans/create-pull-request@v5
         with:
-          token: ${{ secrets.PAT_GITHUB }}
+          token: ${{ secrets.PAT_GITHUB }} # 🔥 Usa o PAT
           branch: develop
           base: main
           title: "Merge develop → main"
