@@ -24,6 +24,13 @@ jobs:
       - name: Compilar o projeto
         run: go build -v ./...
 
+      - name: Criar commit vazio para forçar PR (se necessário)
+        run: |
+          git checkout develop
+          git pull origin develop
+          git commit --allow-empty -m "[GitHub Actions] Forçando atualização para PR"
+          git push origin develop
+
   create-pull-request:
     needs: build
     runs-on: ubuntu-latest
